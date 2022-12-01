@@ -11,7 +11,7 @@
 1. Mon travail est le fichier main.cpp
 2. La classe cvm 21.cpp n'est pas mon code, mais celui du prof
 3. Le problème se situe dans les lignes 135 et 151
-  - J'utilise 2 tableaux, celui du joueur et du code secret
-  - Deux autres pour ne pas faire les vérifications en double, deux tableaux de type bool
-  - Le mot de passe pour le moment est R R V V
+    - J'utilise 2 tableaux, celui du joueur et du code secret
+     - Deux autres pour ne pas faire les vérifications en double, deux tableaux de type bool
+   - Le mot de passe pour le moment est R R V V
   
