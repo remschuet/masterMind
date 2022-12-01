@@ -28,8 +28,8 @@ int main()
 	int margeGauche, margeHaut;
 	int espace_1, espace_2, espace_3;
 	int bienPlace = 0, malPlace = 0;
-	bool dejaprisCacher[NBR_VALEUR_CODE] = {false, false , false, false};	// mettre en bouclebbbb
-	bool dejaprisUser[NBR_VALEUR_CODE] = {false, false, false, false};	// mettre en bouclebbbb
+	bool dejaprisCacher[NBR_VALEUR_CODE] = {true, true , true, true };	// mettre en bouclebbbb
+	bool dejaprisUser[NBR_VALEUR_CODE] = { true, true, true, true };	// mettre en bouclebbbb
 	string choixCouleur[NBR_CHOIX_COULEURS] = { "Rouge", "Vert", "Bleu", "Jaune", "Mauve", "Cyan" };
 	char CouleurLettre_1[NBR_CHOIX_COULEURS] = { 'R', 'V', 'B', 'J', 'M', 'C' };
 	string CouleurLettreSauf_1[NBR_CHOIX_COULEURS] = { "ouge", "ert", "leu", "aune", "auve", "yan" };
@@ -127,14 +127,14 @@ int main()
 				++bienPlace;
 			else
 			{
-				dejaprisCacher[i] = true;
-				dejaprisUser[i] = true;
+				dejaprisCacher[i] = false;
+				dejaprisUser[i] = false;
 			}
 		}
 		//mal placé
 		for (int i = 0; i < NBR_VALEUR_CODE; i++) // i = code utilisateur
 		{
-			if (dejaprisUser[i] == true)	// fonctionne car 12
+			if (dejaprisUser[i] == false)	// fonctionne car 12
 			{
 				for (int j = 0; j < NBR_VALEUR_CODE; j++) // j = code secret
 				{
@@ -142,11 +142,11 @@ int main()
 					{
 						if (ChoixCodeJoueur[i] == codeSecret[j]);
 						{
-							if (dejaprisCacher[j] == true);
+							if (dejaprisCacher[j] == false);
 							{		
 								++malPlace;
-								dejaprisCacher[j] = false;
-								dejaprisUser[i] = false;
+								dejaprisCacher[j] = true;
+								dejaprisUser[i] = true;
 							}
 						}
 					}
