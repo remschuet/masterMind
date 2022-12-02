@@ -134,20 +134,17 @@ int main()
 		//mal placé
 		for (int i = 0; i < NBR_VALEUR_CODE; i++) // i = code utilisateur
 		{
-			if (dejaprisUser[i] == false)	// fonctionne car 12
+			for (int j = 0; j < NBR_VALEUR_CODE; j++) // j = code secret
 			{
-				for (int j = 0; j < NBR_VALEUR_CODE; j++) // j = code secret
+				if (i != j)	// Pour ne pas avoir les biens placés
 				{
-					if (i != j)	// Pour ne pas avoir les biens placés
+					if (ChoixCodeJoueur[i] == codeSecret[j])
 					{
-						if (ChoixCodeJoueur[i] == codeSecret[j]);
-						{
-							if (dejaprisCacher[j] == false);
-							{		
-								++malPlace;
-								dejaprisCacher[j] = true;
-								dejaprisUser[i] = true;
-							}
+						if (dejaprisCacher[j] == false && dejaprisUser[i] == false)
+						{		
+							malPlace+=1;
+							dejaprisCacher[j] = true;
+							dejaprisUser[i] = true;
 						}
 					}
 				}
