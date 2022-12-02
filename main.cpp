@@ -18,21 +18,22 @@ int main()
 	const string TITRE_REGLAGE = "R\220GLAGE DE LA PARTIE";
 
 	// Variable
-	bool choixvalide = false;
+	bool choixValide = false;
 	bool debogage = false;
-	char ChoixCodeJoueur[NBR_VALEUR_CODE] = { ' ', ' ' , ' ', ' ' };
+	char choixCodeJoueur[NBR_VALEUR_CODE] = { ' ', ' ' , ' ', ' ' };
 	char codeSecret[NBR_VALEUR_CODE] = { 'R', 'R' , 'V' , 'V' };	
 	char evaluer;
-	char JoueursChoix;
-	char ChoixLettreEnCours = ' ';
+	char joueursChoix;
+	char choixLettreEnCours = ' ';
 	int margeGauche, margeHaut;
 	int espace_1, espace_2, espace_3;
+	int nbrUtiliseChance = 0;
 	int bienPlace = 0, malPlace = 0;
-	bool dejaprisCacher[NBR_VALEUR_CODE] = {true, true , true, true };	// mettre en bouclebbbb
-	bool dejaprisUser[NBR_VALEUR_CODE] = { true, true, true, true };	// mettre en bouclebbbb
+	bool dejaPrisCacher[NBR_VALEUR_CODE] = {};
+	bool dejaPrisUser[NBR_VALEUR_CODE] = {};
 	string choixCouleur[NBR_CHOIX_COULEURS] = { "Rouge", "Vert", "Bleu", "Jaune", "Mauve", "Cyan" };
-	char CouleurLettre_1[NBR_CHOIX_COULEURS] = { 'R', 'V', 'B', 'J', 'M', 'C' };
-	string CouleurLettreSauf_1[NBR_CHOIX_COULEURS] = { "ouge", "ert", "leu", "aune", "auve", "yan" };
+	char couleurLettre_1[NBR_CHOIX_COULEURS] = { 'R', 'V', 'B', 'J', 'M', 'C' };
+	string couleurLettreSauf_1[NBR_CHOIX_COULEURS] = { "ouge", "ert", "leu", "aune", "auve", "yan" };
 
 	// Affichage des titres
 	gotoxy((CONSOLE_MAX_X / 2 - TITRE_DU_JEU.size() / 2), 2);
@@ -46,9 +47,12 @@ int main()
 		"Activer le mode en d\202bogage ? (O/N) : ";
 	do
 	{
-		JoueursChoix = _getch();
-		JoueursChoix = toupper(JoueursChoix);
-	} while (JoueursChoix != 'O' && JoueursChoix != 'N');
+		joueursChoix = _getch();
+		joueursChoix = toupper(joueursChoix);
+	} while (joueursChoix != 'O' && joueursChoix != 'N');
+
+	if (joueursChoix == 'O')
+		debogage = true;
 
 	clrscr();
 
@@ -62,7 +66,7 @@ int main()
 
 	for (int i = 0; i < NBR_CHOIX_COULEURS; i++)
 	{
-		cout << "(" << CouleurLettre_1[i] << ")" << CouleurLettreSauf_1[i];
+		cout << "(" << couleurLettre_1[i] << ")" << couleurLettreSauf_1[i];
 		if (i < NBR_CHOIX_COULEURS - 1)
 			cout << " , ";
 	}
@@ -73,11 +77,23 @@ int main()
 	
 	gotoxy(margeGauche, margeHaut += 3);
 	cout << '#' << setw(espace_1) << ""  << "Essais" << setw(espace_2) << "" << "Bien plac\202e(s)" << setw(espace_3) << "" << "Mal plac\202e(s)";
-	cout << "\n\n";
+
+	int departPremierChiffreY = wherey() + 2;
+
+	gotoxy(0, departPremierChiffreY);
 
 	for (int i = 1; i <= NBR_CHANCE_JOUEUR; i++)
 	{	
 		cout << setw(margeGauche) << right << i << ")" << "\n";
+	}
+
+	// Affichage du code secret
+	if (debogage)
+	{
+		gotoxy(55, 25);
+		cout << "Code Secret : ";
+		for (int i = 0; i < NBR_VALEUR_CODE; i++)
+			cout << codeSecret[i] << " ";
 	}
 
 	margeGauche = 14;
@@ -90,21 +106,35 @@ int main()
 		clreol();
 
 		// Choix du code de l'utilisateur
-		for (int i = 1; i <= NBR_VALEUR_CODE; i++)
+		for (int i = 0; i < NBR_VALEUR_CODE; i++)
 		{
 			do {
-				choixvalide = false;
-				ChoixLettreEnCours = _getch();
-				ChoixLettreEnCours = toupper(ChoixLettreEnCours);
-					
+				choixValide = false;
+				choixLettreEnCours = _getch();
+				
+				if (choixLettreEnCours == 8 && i > 0) // Backspace
+				{
+					i--;
+					cout << "\b\b";
+					clreol();
+
+				}
+				
+				choixLettreEnCours = toupper(choixLettreEnCours);
+
 				for (int j = 0; j < NBR_CHOIX_COULEURS; j++)
-					if (ChoixLettreEnCours == CouleurLettre_1[j])
+				{
+
+					if (choixLettreEnCours == couleurLettre_1[j])
 					{
-						choixvalide = true;
-						cout << ChoixLettreEnCours << " ";
-						ChoixCodeJoueur[i-1] = ChoixLettreEnCours;
+						choixValide = true;
+						cout << choixLettreEnCours << " ";
+						choixCodeJoueur[i] = choixLettreEnCours;
 					}
-			} while (!(choixvalide));
+				}
+				
+
+			} while (!(choixValide));
 		}
 		gotoxy(1, 10 + NBR_CHANCE_JOUEUR + 3);
 		cout << "\220vsluer ? (O/N) : ";
@@ -123,12 +153,12 @@ int main()
 		// Bien placé
 		for (int i = 0; i < NBR_VALEUR_CODE; i++)
 		{
-			if (codeSecret[i] == ChoixCodeJoueur[i])
+			if (codeSecret[i] == choixCodeJoueur[i])
 				++bienPlace;
 			else
 			{
-				dejaprisCacher[i] = false;
-				dejaprisUser[i] = false;
+				dejaPrisCacher[i] = true;
+				dejaPrisUser[i] = true;
 			}
 		}
 		//mal placé
@@ -138,21 +168,30 @@ int main()
 			{
 				if (i != j)	// Pour ne pas avoir les biens placés
 				{
-					if (ChoixCodeJoueur[i] == codeSecret[j])
+					if (choixCodeJoueur[i] == codeSecret[j])
 					{
-						if (dejaprisCacher[j] == false && dejaprisUser[i] == false)
+						if (dejaPrisCacher[j] == true && dejaPrisUser[i] == true)
 						{		
 							malPlace+=1;
-							dejaprisCacher[j] = true;
-							dejaprisUser[i] = true;
+							dejaPrisCacher[j] = false;
+							dejaPrisUser[i] = false;
 						}
 					}
 				}
 			}
 		}
-		gotoxy(5, 29);
-		cout << bienPlace << "\t" << malPlace;
-	} while(true);
+
+		// Affichage es resultat
+		gotoxy(30, departPremierChiffreY + nbrUtiliseChance);
+		cout << bienPlace;
+		gotoxy(50, departPremierChiffreY + nbrUtiliseChance);
+		cout << malPlace;
+		nbrUtiliseChance++;
+
+	} while(nbrUtiliseChance < NBR_CHANCE_JOUEUR);
+
+	gotoxy(0, 25);
+	cout << "Vous avez perdu ! :(";
 
 _getch();
 
