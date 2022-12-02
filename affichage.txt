@@ -1,0 +1,42 @@
+#include <conio.h>
+#include <string>
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+int main()
+{
+
+	string couleurLettre_1[4] = {"bleu", "jaune", "vert", "rouge"};
+	char lettre;
+
+	for (int i = 0; i < 4; i++)
+	{
+		lettre = couleurLettre_1[i][0];
+		cout << "\n" << "(" << lettre << ")";
+
+		for (int j = 1; j < couleurLettre_1[i].size(); j++)
+		{
+			lettre = couleurLettre_1[i][j];
+			cout << lettre;
+		}
+
+	}
+/*
+	for (int k = 0; k < 4; k++)
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 1; j < 4; j++)
+			{
+				lettre = couleurLettre_1[i][j];
+				cout << lettre << "\n";
+			}
+	}
+	*/
+	//string perso = "bob";
+	//char c = perso[2];
+
+	// cout << c;
+
+}

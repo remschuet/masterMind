@@ -32,6 +32,7 @@ int main()
 	bool dejaPrisCacher[NBR_VALEUR_CODE] = {};
 	bool dejaPrisUser[NBR_VALEUR_CODE] = {};
 	string choixCouleur[NBR_CHOIX_COULEURS] = { "Rouge", "Vert", "Bleu", "Jaune", "Mauve", "Cyan" };
+	char lettre;
 	char couleurLettre_1[NBR_CHOIX_COULEURS] = { 'R', 'V', 'B', 'J', 'M', 'C' };
 	string couleurLettreSauf_1[NBR_CHOIX_COULEURS] = { "ouge", "ert", "leu", "aune", "auve", "yan" };
 
@@ -66,7 +67,14 @@ int main()
 
 	for (int i = 0; i < NBR_CHOIX_COULEURS; i++)
 	{
-		cout << "(" << couleurLettre_1[i] << ")" << couleurLettreSauf_1[i];
+		lettre = choixCouleur[i][0];
+		cout << "(" << lettre << ")";
+
+		for (int j = 1; j < choixCouleur[i].size(); j++)
+		{
+			lettre = choixCouleur[i][j];
+			cout << lettre;
+		}
 		if (i < NBR_CHOIX_COULEURS - 1)
 			cout << " , ";
 	}
