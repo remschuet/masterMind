@@ -11,55 +11,74 @@ int main()
 	// Constante
 	const int CONSOLE_MAX_X = 120;
 	const int CONSOLE_MAX_Y = 30;
-	const int NBR_CHOICE_COLORS = 6;
-	const int NBR_CHANCE_PLAYER = 10;
-	const int LENGTH_PASS_CODE = 4;
+	const int LENGTH_COLORS_POSSIBILITY = 6;
+	const int MAX_PLAYER_TRY = 10;
+	const int PASS_CODE_LENGTH = 4;
 	const string GAME_TITLE = "JEU DES COULEURS";
-	const string GAME_MODE_TITLE = "R\220GLAGE DE LA PARTIE";
+	const string GAME_MODE_TITLE = "R\220GLAGES DE LA PARTIE";
+	string COLOR_CHOICE[LENGTH_COLORS_POSSIBILITY] = { "Rouge", "Vert", "Bleu", "Jaune", "Mauve", "Cyan" };
 
 	// Variable
-	bool validChoice = false;
+	bool playerTryValidPossibility = false;
 	bool showPassCode = false;
+	bool alreadyTookPassCode[PASS_CODE_LENGTH] = {};	// init a false
+	bool alreadyTookPlayerTry[PASS_CODE_LENGTH] = {};	// init a false
 
-	char playerPassCodeTry[LENGTH_PASS_CODE];
-	char passCode[LENGTH_PASS_CODE];
-	char letterPossibility[NBR_CHOICE_COLORS];
+	char playerPassCodeTry[PASS_CODE_LENGTH];
+	char passCode[PASS_CODE_LENGTH];
+	char letterPossibility[LENGTH_COLORS_POSSIBILITY];
 	char answerEvaluateCode;
 	char playerChoice;
 	char LetterChoiceInProgress = ' ';
 	char letter;
 	
 	int margeGauche, margeHaut;
-	int espace_1, espace_2, espace_3;
-	
+
 	int nbrAttemptPassCode = 0;
 	int nbrAtGoodPlace = 0, nbrWrongPlace = 0;
-	bool alreadyTookPassCode[LENGTH_PASS_CODE] = {};	// init a false
-	bool alreadyTookPlayerCode[LENGTH_PASS_CODE] = {};	// init a false
-	string colorChoice[NBR_CHOICE_COLORS] = { "Rouge", "Vert", "Bleu", "Jaune", "Mauve", "Cyan"};
+
+	// variable position
+	const short gameTitlePosY = 1;
+	const short secondInformationPosY = gameTitlePosY + 3;
+	const short textInformationPosY = gameTitlePosY + 4;
+	const short debogModePosY = secondInformationPosY + 3;
+	const short leftMarginColorPosX = 9;
+	const short leftMarginInformationGamePosY = textInformationPosY + 3;
+	const short passCodePosX = 55;
+	const short passCodePosY = 24;
+	const short espace_1 = 4, espace_2 = 8, espace_3 = 4;
+	const short goodPlacePosX = 30;
+	const short wrongPlacePosX = 50;
+	const short placeStartFirstTryPosY = leftMarginInformationGamePosY+2;
+	const short tryPlayerPosX = 14;
+	short tryPlayerPosY = placeStartFirstTryPosY;
+	const short evaluatePosY = tryPlayerPosY + MAX_PLAYER_TRY + 3;
+	const short FINAL_MESSAGE_POS_X = 0;
+	const short FINAL_MESSAGE_POS_Y = 25;
+
 
 	// Copy in array the first letter of each colors
-	for (int i = 0; i < NBR_CHOICE_COLORS; i++)
+	for (int i = 0; i < LENGTH_COLORS_POSSIBILITY; i++)
 	{
-		letter = colorChoice[i][0];
-		// letter = toupper(letter);
+		letter = COLOR_CHOICE[i][0];
 		letterPossibility[i] = toupper(letter);
 	}
 
 	// Random Pass Code
 	srand(time(0));
-	for (int i = 0; i < LENGTH_PASS_CODE; i++)
-		passCode[i] = letterPossibility[(rand() % NBR_CHOICE_COLORS)];
+	for (int i = 0; i < PASS_CODE_LENGTH; i++)
+		passCode[i] = letterPossibility[(rand() % LENGTH_COLORS_POSSIBILITY)];
 
 	// Display titles
-	gotoxy((CONSOLE_MAX_X / 2 - GAME_TITLE.size() / 2), 2);
+	gotoxy((CONSOLE_MAX_X / 2 - GAME_TITLE.size() / 2), gameTitlePosY);
 	cout << GAME_TITLE;
 
-	gotoxy((CONSOLE_MAX_X / 2 - GAME_MODE_TITLE.size() / 2), 5);
+	gotoxy((CONSOLE_MAX_X / 2 - GAME_MODE_TITLE.size() / 2), secondInformationPosY);
 	cout << GAME_MODE_TITLE;
 
 	// Player choice Game Mode he want
-	cout << "\n\n" << "\t" <<
+	gotoxy(0,debogModePosY);
+	cout << "\t" <<
 		"Activer le mode en d\202bogage ? (O/N) : ";
 	do
 	{
@@ -73,68 +92,56 @@ int main()
 	clrscr();
 
 	// Display title of the game
-	gotoxy((CONSOLE_MAX_X / 2 - GAME_TITLE.size() / 2), 2);
+	gotoxy((CONSOLE_MAX_X / 2 - GAME_TITLE.size() / 2), gameTitlePosY);
 	cout << GAME_TITLE;
 
-	margeGauche = 9;
-	margeHaut = 5;
-	gotoxy(margeGauche, margeHaut);
+	gotoxy(leftMarginColorPosX, textInformationPosY);
 	
 	// Display colors name
-	for (int i = 0; i < NBR_CHOICE_COLORS; i++)
+	for (int i = 0; i < LENGTH_COLORS_POSSIBILITY; i++)
 	{
-		letter = colorChoice[i][0];
+		letter = COLOR_CHOICE[i][0];
 		cout << "(" << letter << ")";
 
-		for (int j = 1; j < colorChoice[i].size(); j++)
+		for (int j = 1; j < COLOR_CHOICE[i].size(); j++)
 		{
-			letter = colorChoice[i][j];
+			letter = COLOR_CHOICE[i][j];
 			cout << letter;
 		}
-		if (i < NBR_CHOICE_COLORS - 1)
+		if (i < LENGTH_COLORS_POSSIBILITY - 1)
 			cout << " , ";
 	}
 	
-	espace_1 = 4;
-	espace_2 = 8;
-	espace_3 = 4;
-	
 	// Display game informations
-	gotoxy(margeGauche, margeHaut += 3);
+	gotoxy(leftMarginColorPosX, leftMarginInformationGamePosY);
 	cout << '#' << setw(espace_1) << ""  << "Essais" << setw(espace_2) << "" << "Bien plac\202e(s)" << setw(espace_3) << "" << "Mal plac\202e(s)";
 
-	int departPremierChiffreY = wherey() + 2;
-
-	gotoxy(0, departPremierChiffreY);
-
-	for (int i = 1; i <= NBR_CHANCE_PLAYER; i++)
+	gotoxy(0, placeStartFirstTryPosY);
+	for (int i = 1; i <= MAX_PLAYER_TRY; i++)
 	{	
-		cout << setw(margeGauche) << right << i << ")" << "\n";
+		cout << setw(leftMarginColorPosX) << right << i << ")" << "\n";
 	}
 
 	// Display game Pass Code
 	if (showPassCode)
 	{
-		gotoxy(55, 25);
+		gotoxy(passCodePosX, passCodePosY);
 		cout << "Code Secret : ";
-		for (int i = 0; i < LENGTH_PASS_CODE; i++)
+		for (int i = 0; i < PASS_CODE_LENGTH; i++)
 			cout << passCode[i] << " ";
 	}
-
-	margeGauche = 14;
-	margeHaut = 10;
 
 	// Display game informations
 	do {
 		nbrAtGoodPlace = nbrWrongPlace = 0;
-		gotoxy(margeGauche, margeHaut);
+		gotoxy(tryPlayerPosX, tryPlayerPosY);
 		clreol();
 
 		// Player choice patern to try Pass Code
-		for (int i = 0; i < LENGTH_PASS_CODE; i++)
+		for (int i = 0; i < PASS_CODE_LENGTH; i++)
 		{
 			do {
-				validChoice = false;
+				playerTryValidPossibility = false;
 				LetterChoiceInProgress = _getch();
 				
 				// If press Backspace
@@ -143,30 +150,26 @@ int main()
 					i--;
 					cout << "\b\b";
 					clreol();
-
 				}
 				
 				LetterChoiceInProgress = toupper(LetterChoiceInProgress);
 
 				// If choice is in possibility
-				for (int j = 0; j < NBR_CHOICE_COLORS; j++)
+				for (int j = 0; j < LENGTH_COLORS_POSSIBILITY; j++)
 				{
-
 					if (LetterChoiceInProgress == letterPossibility[j])
 					{
-						validChoice = true;
+						playerTryValidPossibility = true;
 						cout << LetterChoiceInProgress << " ";
 						playerPassCodeTry[i] = LetterChoiceInProgress;
 					}
 				}
-				
-			} while (!(validChoice));
+			} while (!(playerTryValidPossibility));
 		}
 
 		// Player Pass Code Evaluation
-		gotoxy(1, 10 + NBR_CHANCE_PLAYER + 3);
-		cout << "\220vsluer ? (O/N) : ";
-
+		gotoxy(1, evaluatePosY);
+		cout << "\220valuer ? (O/N) : ";
 		do
 		{
 			answerEvaluateCode = _getch();
@@ -176,37 +179,41 @@ int main()
 		if (answerEvaluateCode == 'N')
 			continue;
 		else
-			++margeHaut;
+		{
+			//++evaluatePosY;
+		}
+
+		tryPlayerPosY++;
 
 		// Patern at good place
-		for (int i = 0; i < LENGTH_PASS_CODE; i++)
+		for (int i = 0; i < PASS_CODE_LENGTH; i++)
 		{
 			if (passCode[i] == playerPassCodeTry[i])
 			{
 				++nbrAtGoodPlace;
 				alreadyTookPassCode[i] = false;
-				alreadyTookPlayerCode[i] = false;
+				alreadyTookPlayerTry[i] = false;
 			}
 			else
 			{
 				alreadyTookPassCode[i] = true;
-				alreadyTookPlayerCode[i] = true;
+				alreadyTookPlayerTry[i] = true;
 			}
 		}
 		// Patern wrong place
-		for (int i = 0; i < LENGTH_PASS_CODE; i++) // i = player patern
+		for (int i = 0; i < PASS_CODE_LENGTH; i++) // i = player patern
 		{
-			for (int j = 0; j < LENGTH_PASS_CODE; j++) // j = Pass Code
+			for (int j = 0; j < PASS_CODE_LENGTH; j++) // j = Pass Code
 			{
 				if (i != j)
 				{
 					if (playerPassCodeTry[i] == passCode[j])
 					{
-						if (alreadyTookPassCode[j] == true && alreadyTookPlayerCode[i] == true)
+						if (alreadyTookPassCode[j] == true && alreadyTookPlayerTry[i] == true)
 						{		
 							nbrWrongPlace+=1;
 							alreadyTookPassCode[j] = false;
-							alreadyTookPlayerCode[i] = false;
+							alreadyTookPlayerTry[i] = false;
 						}
 					}
 				}
@@ -214,16 +221,19 @@ int main()
 		}
 
 		// Diplay number of good / wrong +
-		gotoxy(30, departPremierChiffreY + nbrAttemptPassCode);
+		gotoxy(goodPlacePosX, placeStartFirstTryPosY + nbrAttemptPassCode);
 		cout << nbrAtGoodPlace;
-		gotoxy(50, departPremierChiffreY + nbrAttemptPassCode);
+		gotoxy(wrongPlacePosX, placeStartFirstTryPosY + nbrAttemptPassCode);
 		cout << nbrWrongPlace;
 		nbrAttemptPassCode++;
 
-	} while(nbrAttemptPassCode < NBR_CHANCE_PLAYER);
+	} while((nbrAttemptPassCode < MAX_PLAYER_TRY) && nbrAtGoodPlace != PASS_CODE_LENGTH);
 
-	gotoxy(0, 25);
-	cout << "Vous avez perdu ! :(";
+	gotoxy(FINAL_MESSAGE_POS_X, FINAL_MESSAGE_POS_Y);
+	if (nbrAtGoodPlace == PASS_CODE_LENGTH)
+		cout << "Vous avez gagner ! :(";
+	else
+		cout << "Vous avez perdu ! :(";
+
 	_getch();
-
 }
