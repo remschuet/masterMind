@@ -169,7 +169,7 @@ int main()
 		if (answerEvaluateCode == 'N')
 			continue;
 
-		// for the next attempt
+		// For the next attempt
 		playerLetterAttemptPosY++;
 
 		// Find well placed letters
